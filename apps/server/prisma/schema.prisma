@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+
+model User {
+  id       Int    @id @default(autoincrement())
+  uid      String @unique
+  email    String @unique
+  name String
+  password String
+  role Role@default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  profile File?
+  @@map("users")
+}
+
+model Film {
+  id String @id @default(cuid())
+  title String
+  description String
+  genre String
+  fileId String @unique
+  file File @relation("film_video", fields: [fileId], references: [id])
+  thumbnailId String @unique
+  thumbnail File @relation("film_thumbnail",fields: [thumbnailId], references: [id])
+  characters Character[]
+  @@map("videos")
+}
+
+model Character{
+  id String @id @default(cuid())
+  title String
+  description String
+  timestamps String[]
+  filmId String
+  film Film @relation(fields: [filmId], references: [id])
+  fileId String @unique
+  file File @relation("character_video", fields: [fileId], references: [id])
+  thumbnailId String @unique
+  thumbnail File @relation("character_thumbnail",fields: [thumbnailId], references: [id])
+  @@map("characters")
+}
+
+model File{
+  id String @id @default(cuid())
+  name String
+  mimetype String
+  size Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  profileId Int? @unique
+  profile User? @relation(fields: [profileId], references: [id])
+  film Film?@relation("film_video")
+  filmThumbnail Film?@relation("film_thumbnail")
+  character Character?@relation("character_video")
+  characterThumbnail Character?@relation("character_thumbnail")
+  @@map("files")
+}
