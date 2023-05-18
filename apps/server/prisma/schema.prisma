@@ -48,15 +48,15 @@ model Film {
 
 model Character{
   id String @id @default(cuid())
-  title String
+  name String
   description String
-  timestamps String[]
+  timestamps Json
   filmId String
   film Film @relation(fields: [filmId], references: [id])
   fileId String @unique
   file File @relation("character_video", fields: [fileId], references: [id])
-  thumbnailId String @unique
-  thumbnail File @relation("character_thumbnail",fields: [thumbnailId], references: [id])
+  imageId String @unique
+  image File @relation("character_image",fields: [imageId], references: [id])
   @@map("characters")
 }
 
@@ -72,6 +72,6 @@ model File{
   film Film?@relation("film_video")
   filmThumbnail Film?@relation("film_thumbnail")
   character Character?@relation("character_video")
-  characterThumbnail Character?@relation("character_thumbnail")
+  characterImage Character?@relation("character_image")
   @@map("files")
 }

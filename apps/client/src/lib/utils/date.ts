@@ -16,3 +16,11 @@ export const timestampToTimeAndDate = function (timestamp: number | string) {
 	const date = new Date(timestamp);
 	return `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}, at ${date.getHours()}:${date.getMinutes()}`;
 };
+
+function padTo2Digits(num: number) {
+	return num.toString().padStart(2, '0');
+}
+
+export const getHoursAndMinutes = function (date: Date) {
+	return `${padTo2Digits(date.getHours())}:${padTo2Digits(date.getMinutes())}`;
+};

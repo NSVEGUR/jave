@@ -8,6 +8,7 @@ const config = {
 				inverted: '#ffffff',
 				accent: '#A2D7F5',
 				muted: '#2D2D2D',
+				'muted-inverted': '#7F7D7D',
 				error: '#d74c4c',
 				okay: '#2DB00C'
 			},

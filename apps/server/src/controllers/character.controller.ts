@@ -20,12 +20,12 @@ const get = catchAsync(async function (
 	}
 	const data = {
 		id: character.id,
-		title: character.title,
+		name: character.name,
 		description: character.description,
 		size: character.file.size,
 		mimetype: character.file.mimetype,
 		createdAt: character.file.createdAt,
-		thumbnailId: character.thumbnailId
+		imageId: character.imageId
 	};
 	return res.status(200).json({
 		message: 'Fetched film details successfully',

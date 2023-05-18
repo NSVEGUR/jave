@@ -5,16 +5,14 @@ import { prisma } from '../../prisma';
 import { Character, Film } from '@prisma/client';
 
 const upload = catchAsync(async function (
-	req: Request<
-		{},
-		{},
-		{ film: Film; characters: Character[] }
-	>,
+	req: Request,
 	res: Response,
 	next: NextFunction
 ) {
-	const { film: filmBody, characters: charactersBody } =
-		req.body;
+	const filmBody = JSON.parse(req.body.filmBody);
+	const characterBody = JSON.parse(
+		req.body.characterBody
+	);
 	const files = req.files as
 		| {
 				[fieldname: string]: Express.Multer.File[];
@@ -28,28 +26,23 @@ const upload = catchAsync(async function (
 			)
 		);
 	}
-	const {
-		film: filmFiles,
-		filmThumbnail: filmThumbnailFiles,
-		character: characterFiles,
-		characterThumbnail: characterThumbnailFiles
-	} = files;
+	const { film, thumbnail, character, image } = files;
 	// Creating main video file for film
 	const filmFile = await prisma.file.create({
 		data: {
-			id: filmFiles[0].filename,
-			name: filmFiles[0].originalname,
-			mimetype: filmFiles[0].mimetype,
-			size: filmFiles[0].size
+			id: film[0].filename,
+			name: film[0].originalname,
+			mimetype: film[0].mimetype,
+			size: film[0].size
 		}
 	});
 	// Creating thumbnail file for film
-	const filmThumbnailFile = await prisma.file.create({
+	const filmThumbnail = await prisma.file.create({
 		data: {
-			id: filmThumbnailFiles[0].filename,
-			name: filmThumbnailFiles[0].originalname,
-			mimetype: filmThumbnailFiles[0].mimetype,
-			size: filmThumbnailFiles[0].size
+			id: thumbnail[0].filename,
+			name: thumbnail[0].originalname,
+			mimetype: thumbnail[0].mimetype,
+			size: thumbnail[0].size
 		}
 	});
 	// Storing the main film details in database
@@ -59,27 +52,27 @@ const upload = catchAsync(async function (
 			description: filmBody.description,
 			genre: filmBody.genre,
 			fileId: filmFile.id,
-			thumbnailId: filmThumbnailFile.id
+			thumbnailId: filmThumbnail.id
 		}
 	});
 	// Characters and their details
 	for (const [
 		index,
-		characterBody
-	] of charactersBody.entries()) {
+		characterObj
+	] of characterBody.entries()) {
 		if (
-			characterFiles.length <= index ||
-			characterThumbnailFiles.length <= index
+			character.length <= index ||
+			image.length <= index
 		) {
 			return next(
 				new AppError(
-					'Character data is received but no file has been uploaded',
+					'Character data is received but no video or thumbnail has been uploaded',
 					400
 				)
 			);
 		}
 		// Creating character video file
-		let file = characterFiles[index];
+		let file = character[index];
 		const characterFile = await prisma.file.create({
 			data: {
 				id: file.filename,
@@ -89,24 +82,23 @@ const upload = catchAsync(async function (
 			}
 		});
 		// Creating character thumbnail file
-		file = characterThumbnailFiles[index];
-		const characterThumbnailFile =
-			await prisma.file.create({
-				data: {
-					id: file.filename,
-					name: file.originalname,
-					mimetype: file.mimetype,
-					size: file.size
-				}
-			});
+		file = image[index];
+		const characterImage = await prisma.file.create({
+			data: {
+				id: file.filename,
+				name: file.originalname,
+				mimetype: file.mimetype,
+				size: file.size
+			}
+		});
 		await prisma.character.create({
 			data: {
-				title: characterBody.title,
-				description: characterBody.description,
-				timestamps: characterBody.timestamps,
+				name: characterObj.name,
+				description: characterObj.description,
+				timestamps: characterObj.timestamps,
 				filmId: newFilm.id,
 				fileId: characterFile.id,
-				thumbnailId: characterThumbnailFile.id
+				imageId: characterImage.id
 			}
 		});
 	}

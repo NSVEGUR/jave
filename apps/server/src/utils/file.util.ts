@@ -33,6 +33,13 @@ export const video_mimetype = new Set([
 	'video/avi'
 ]);
 
+export const image_mimetype = new Set([
+	'image/png',
+	'image/jpg',
+	'image/jpeg',
+	'image/svg+xml'
+]);
+
 const uploadVideo = multer({
 	storage,
 	fileFilter(req, file, callback) {
@@ -45,12 +52,20 @@ const uploadVideo = multer({
 				callback(null, false);
 				return callback(
 					new Error(
-						`Only ${video_mimetype} mimetype are allowed`
+						`Only ${video_mimetype} mimetype are allowed for video`
+					)
+				);
+			}
+		} else {
+			if (!image_mimetype.has(file.mimetype)) {
+				callback(null, false);
+				return callback(
+					new Error(
+						`Only ${image_mimetype} mimetype are allowed for image`
 					)
 				);
 			}
 		}
-
 		callback(null, true);
 	}
 });

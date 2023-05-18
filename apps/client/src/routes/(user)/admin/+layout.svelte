@@ -41,9 +41,9 @@
 	});
 </script>
 
-<main class="h-full flex flex-col items-center justify-center gap-3 overflow-scroll">
+<main class="relative h-full w-full overflow-hidden">
 	<header
-		class="fixed w-full h-16 top-0 left-1/2 -translate-x-1/2 flex items-center justify-between px-20 z-10 bg-black bg-opacity-90 backdrop-blur-md"
+		class="sticky w-full h-16 top-0 flex items-center justify-between px-20 z-10 bg-black bg-opacity-90 backdrop-blur-md"
 	>
 		<div>
 			<img src={Logo} alt="logo" class="w-8" />

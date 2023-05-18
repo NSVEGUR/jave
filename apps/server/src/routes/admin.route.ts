@@ -14,9 +14,9 @@ router.post(
 	'/film',
 	uploadVideo.fields([
 		{ name: 'film', maxCount: 1 },
-		{ name: 'filmThumbnail', maxCount: 1 },
-		{ name: 'character' },
-		{ name: 'characterThumbnail' }
+		{ name: 'thumbnail', maxCount: 1 },
+		{ name: 'character', maxCount: 25 },
+		{ name: 'image', maxCount: 25 }
 	]),
 	Film.upload
 );
