@@ -7,6 +7,14 @@ declare global {
 		}
 	}
 	namespace App {
+		interface Film {
+			id: string;
+			title: string;
+			genre: string;
+			description: string;
+			fileId: string;
+			thumbnailId: string;
+		}
 		interface Locals {
 			user: {
 				email: string;

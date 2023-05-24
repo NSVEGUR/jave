@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-export default function (fn: any) {
+export const catchAsync = function (fn: any) {
 	return (
 		req: Request,
 		res: Response,
@@ -8,4 +8,4 @@ export default function (fn: any) {
 	) => {
 		fn(req, res, next).catch(next);
 	};
-}
+};

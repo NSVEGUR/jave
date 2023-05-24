@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import AppError from '../utils/appError.util';
 import { prisma } from '../../prisma';
-import catchAsync from '../utils/catchAsync.util';
+import { catchAsync } from '../utils/catchAsync.util';
 
 const get = catchAsync(async function (
 	req: Request,
@@ -18,19 +18,21 @@ const get = catchAsync(async function (
 	if (!character) {
 		return next(new AppError('Film not found', 404));
 	}
-	const data = {
-		id: character.id,
-		name: character.name,
-		description: character.description,
-		size: character.file.size,
-		mimetype: character.file.mimetype,
-		createdAt: character.file.createdAt,
-		imageId: character.imageId
-	};
 	return res.status(200).json({
+		status: 200,
 		message: 'Fetched film details successfully',
 		success: true,
-		data
+		data: {
+			character: {
+				id: character.id,
+				name: character.name,
+				description: character.description,
+				size: character.file?.size,
+				mimetype: character.file?.mimetype,
+				createdAt: character.file?.createdAt,
+				imageId: character.imageId
+			}
+		}
 	});
 });
 

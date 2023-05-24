@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { LayoutData } from './$types';
-	import SearchSvg from '$lib/components/SVG/SearchSVG.svelte';
 	import Logo from '$lib/images/logo.png';
 	import { onMount } from 'svelte';
+	import Logout from '$lib/svg/Logout.svelte';
 	export let data: LayoutData;
 	let hyperlinks = [
 		{
@@ -14,6 +14,11 @@
 			name: 'Store',
 			link: '/admin/store',
 			active: data.url === '/admin/store'
+		},
+		{
+			name: 'Dashboard',
+			link: '/admin/dashboard',
+			active: data.url.includes('/admin/dashboard')
 		},
 		{
 			name: 'Library',
@@ -66,16 +71,14 @@
 				</li>
 			{/each}
 		</ul>
-		<div
-			class="h-7 border-[1px] border-base rounded-md flex items-center px-1 text-skin-muted-inverted text-sm"
-		>
-			<SearchSvg />
-			<input
-				type="text"
-				class="w-full p-1 bg-transparent outline-none flex-grow"
-				placeholder="Search"
-			/>
-		</div>
+		<form action="/logout" method="POST">
+			<button
+				type="submit"
+				class="flex gap-1 items-center justify-center text-sm bg-muted p-1 rounded-md"
+			>
+				<Logout /> Logout
+			</button>
+		</form>
 	</header>
 	<slot><!-- optional fallback --></slot>
 </main>

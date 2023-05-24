@@ -5,7 +5,6 @@ import { API_ADDRESS, COOKIE } from '$env/static/private';
 export const load: PageServerLoad = async ({ locals }) => {
 	//If logged in redirect the user
 	if (locals.user && locals.user.role === 'admin') {
-		console.log(locals.user, 'page login');
 		throw redirect(302, '/admin');
 	}
 	return {

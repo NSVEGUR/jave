@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
-import catchAsync from '../utils/catchAsync.util';
+import { catchAsync } from '../utils/catchAsync.util';
+
 import AppError from '../utils/appError.util';
 import { prisma } from '../../prisma';
-import { Character, Film } from '@prisma/client';
+import { Timestamp } from '@prisma/client';
 
 const upload = catchAsync(async function (
 	req: Request,
@@ -13,6 +14,7 @@ const upload = catchAsync(async function (
 	const characterBody = JSON.parse(
 		req.body.characterBody
 	);
+	const { type } = req.body;
 	const files = req.files as
 		| {
 				[fieldname: string]: Express.Multer.File[];
@@ -52,7 +54,8 @@ const upload = catchAsync(async function (
 			description: filmBody.description,
 			genre: filmBody.genre,
 			fileId: filmFile.id,
-			thumbnailId: filmThumbnail.id
+			thumbnailId: filmThumbnail.id,
+			type
 		}
 	});
 	// Characters and their details
@@ -60,27 +63,37 @@ const upload = catchAsync(async function (
 		index,
 		characterObj
 	] of characterBody.entries()) {
-		if (
-			character.length <= index ||
-			image.length <= index
-		) {
+		if (image.length <= index) {
 			return next(
 				new AppError(
-					'Character data is received but no video or thumbnail has been uploaded',
+					'Character data is received but no image has been uploaded to show the character',
 					400
 				)
 			);
 		}
-		// Creating character video file
-		let file = character[index];
-		const characterFile = await prisma.file.create({
-			data: {
-				id: file.filename,
-				name: file.originalname,
-				mimetype: file.mimetype,
-				size: file.size
+		let file: Express.Multer.File | undefined;
+		let characterFileId: string | undefined;
+		if (type === 'JAVE') {
+			if (character.length <= index) {
+				return next(
+					new AppError(
+						'Character data is received but no image has been uploaded to show the character',
+						400
+					)
+				);
 			}
-		});
+			// Creating character video file
+			file = character[index];
+			await prisma.file.create({
+				data: {
+					id: file.filename,
+					name: file.originalname,
+					mimetype: file.mimetype,
+					size: file.size
+				}
+			});
+			characterFileId = file.filename;
+		}
 		// Creating character thumbnail file
 		file = image[index];
 		const characterImage = await prisma.file.create({
@@ -91,20 +104,58 @@ const upload = catchAsync(async function (
 				size: file.size
 			}
 		});
-		await prisma.character.create({
+		const newCharacter = await prisma.character.create({
 			data: {
 				name: characterObj.name,
 				description: characterObj.description,
-				timestamps: characterObj.timestamps,
 				filmId: newFilm.id,
-				fileId: characterFile.id,
+				fileId: characterFileId,
 				imageId: characterImage.id
 			}
 		});
+		if (type === 'JAVE') {
+			const timestamps =
+				characterObj.timestamps as Timestamp[];
+			for (const timestamp of timestamps) {
+				await prisma.timestamp.create({
+					data: {
+						characterId: newCharacter.id,
+						start: timestamp.start,
+						end: timestamp.end
+					}
+				});
+			}
+		}
 	}
 	return res.status(201).json({
+		status: 201,
 		message: 'Created Film successfully',
 		success: true
+	});
+});
+
+const getAll = catchAsync(async function (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) {
+	const films = await prisma.film.findMany({});
+	return res.status(200).json({
+		message: 'Fetched all films successfully',
+		success: true,
+		status: 200,
+		data: {
+			films: films.map((film) => {
+				return {
+					id: film.id,
+					title: film.title,
+					genre: film.genre,
+					description: film.description,
+					fileId: film.fileId,
+					thumbnailId: film.thumbnailId
+				};
+			})
+		}
 	});
 });
 
@@ -123,24 +174,28 @@ const get = catchAsync(async function (
 	if (!film) {
 		return next(new AppError('Film not found', 404));
 	}
-	const data = {
-		id: film.id,
-		title: film.title,
-		genre: film.description,
-		description: film.description,
-		size: film.file.size,
-		mimetype: film.file.mimetype,
-		createdAt: film.file.createdAt,
-		thumbnailId: film.thumbnailId
-	};
 	return res.status(200).json({
+		status: 200,
 		message: 'Fetched film details successfully',
 		success: true,
-		data
+		data: {
+			film: {
+				id: film.id,
+				title: film.title,
+				genre: film.genre,
+				fileId: film.fileId,
+				description: film.description,
+				size: film.file.size,
+				mimetype: film.file.mimetype,
+				createdAt: film.file.createdAt,
+				thumbnailId: film.thumbnailId
+			}
+		}
 	});
 });
 
 export default {
 	upload,
-	get
+	get,
+	getAll
 };

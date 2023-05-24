@@ -3,8 +3,8 @@
 	import Slide_1 from '$lib/images/watch-carousel/1.jpg';
 	import Slide_2 from '$lib/images/watch-carousel/2.jpg';
 	import Slide_3 from '$lib/images/watch-carousel/3.jpg';
-	import ChevronLeftSvg from '$lib/components/SVG/ChevronLeftSVG.svelte';
-	import ChevronRightSvg from '$lib/components/SVG/ChevronRightSVG.svelte';
+	import ChevronLeft from '$lib/svg/ChevronLeft.svelte';
+	import ChevronRight from '$lib/svg/ChevronRight.svelte';
 	const slides = [
 		{
 			img: Slide_1,
@@ -75,10 +75,10 @@
 	{/each}
 	<div class="absolute flex w-full justify-between gap-4">
 		<button on:click={prevSlide}>
-			<ChevronLeftSvg width="40px" height="40px" />
+			<ChevronLeft width="40px" height="40px" />
 		</button>
 		<button on:click={nextSlide}>
-			<ChevronRightSvg width="40px" height="40px" />
+			<ChevronRight width="40px" height="40px" />
 		</button>
 	</div>
 </div>

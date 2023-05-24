@@ -19,6 +19,11 @@ enum Role {
   ADMIN
 }
 
+enum Movie {
+  NORMAL
+  JAVE
+}
+
 
 model User {
   id       Int    @id @default(autoincrement())
@@ -42,6 +47,7 @@ model Film {
   file File @relation("film_video", fields: [fileId], references: [id])
   thumbnailId String @unique
   thumbnail File @relation("film_thumbnail",fields: [thumbnailId], references: [id])
+  type Movie
   characters Character[]
   @@map("videos")
 }
@@ -50,14 +56,23 @@ model Character{
   id String @id @default(cuid())
   name String
   description String
-  timestamps Json
   filmId String
   film Film @relation(fields: [filmId], references: [id])
-  fileId String @unique
-  file File @relation("character_video", fields: [fileId], references: [id])
+  fileId String? @unique
+  file File? @relation("character_video", fields: [fileId], references: [id])
   imageId String @unique
   image File @relation("character_image",fields: [imageId], references: [id])
+  timestamps Timestamp[]
   @@map("characters")
+}
+
+model LiveChannel{
+  id String @id @default(cuid())
+  name String @unique
+  logoId String @unique
+  logo File @relation("live_channel_logo",fields: [logoId], references: [id])
+  url String
+  @@map("live_channels")
 }
 
 model File{
@@ -73,5 +88,15 @@ model File{
   filmThumbnail Film?@relation("film_thumbnail")
   character Character?@relation("character_video")
   characterImage Character?@relation("character_image")
+  liveChannel LiveChannel?@relation("live_channel_logo")
   @@map("files")
+}
+
+model Timestamp{
+  id Int @id @default(autoincrement())
+  start Int
+  end Int
+  characterId String
+  character Character@relation(fields: [characterId], references: [id])
+  @@map("timestamps")
 }

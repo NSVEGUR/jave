@@ -6,6 +6,7 @@ const errorDev = (err: any, res: Response) => {
 	res.status(err.statusCode).json({
 		status: err.statusCode,
 		error: err,
+		success: false,
 		message: err.message,
 		stack: err.stack
 	});
@@ -14,12 +15,14 @@ const errorDev = (err: any, res: Response) => {
 const errorProd = (err: any, res: Response) => {
 	if (err.isOperational) {
 		res.status(err.statusCode).json({
+			success: false,
 			status: err.statusCode,
 			message: err.message
 		});
 	} else {
 		console.error('ERROR! 💥💥💥', err);
 		res.status(500).json({
+			success: false,
 			status: 500,
 			message:
 				'Something went wrong, server side error:('

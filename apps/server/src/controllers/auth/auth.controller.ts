@@ -1,5 +1,5 @@
 import { Role, User } from '@prisma/client';
-import catchAsync from '../../utils/catchAsync.util';
+import { catchAsync } from '../../utils/catchAsync.util';
 import { NextFunction, Request, Response } from 'express';
 import Auth from './auth.util';
 import Crypto from '../../utils/crypto.util';
@@ -68,6 +68,7 @@ const signup = catchAsync(async function (
 	});
 	return res.status(201).json({
 		status: 201,
+		success: true,
 		message: 'Signed up successfully'
 	});
 });
@@ -120,6 +121,7 @@ const login = catchAsync(async function (
 	});
 	return res.status(200).json({
 		status: 200,
+		success: true,
 		message: 'Logged in successfully',
 		data: {
 			user: {
@@ -139,6 +141,7 @@ const get = catchAsync(async function (
 	const { user } = req;
 	return res.status(200).json({
 		status: 200,
+		success: true,
 		message: 'User found',
 		data: {
 			user: {

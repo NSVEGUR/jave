@@ -1,7 +1,7 @@
 import { prisma } from '../../prisma';
 import config from '../config';
 import AppError from '../utils/appError.util';
-import catchAsync from '../utils/catchAsync.util';
+import { catchAsync } from '../utils/catchAsync.util';
 import { Request, Response, NextFunction } from 'express';
 import fs from 'fs';
 import { video_mimetype } from '../utils/file.util';
@@ -67,13 +67,16 @@ const getThumbnail = catchAsync(async function (
 			new AppError('Thumbnail not found', 404)
 		);
 	}
-	return res.download(
+	res.writeHead(200, {
+		'Content-Type': thumbnail.mimetype
+	});
+	fs.readFile(
 		`${config.FILE_STORE}/${thumbnail.id}`,
-		thumbnail.name,
-		(err) => {
+		function (err, content) {
 			if (err) {
 				return next(err);
 			}
+			return res.end(content);
 		}
 	);
 });

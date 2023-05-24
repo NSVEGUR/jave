@@ -5,6 +5,7 @@ import Character from '../controllers/character.controller';
 
 const router = Router();
 
+router.get('/', Film.getAll);
 router.get('/:videoId', File.getVideo);
 router.get('/:thumbnailId/thumbnail', File.getThumbnail);
 router.get('/:filmId/metadata', Film.get);
