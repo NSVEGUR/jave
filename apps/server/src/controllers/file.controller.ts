@@ -11,6 +11,7 @@ const getVideo = catchAsync(async function (
 	res: Response,
 	next: NextFunction
 ) {
+	console.log('video request has come');
 	const { videoId } = req.params;
 	const video = await prisma.file.findUnique({
 		where: {
@@ -25,6 +26,7 @@ const getVideo = catchAsync(async function (
 	const size = stat.size;
 	const range = req.headers.range;
 	if (!range) {
+		console.log('there are no ranges');
 		const head = {
 			'Content-Length': size,
 			'Content-Type': video.mimetype
@@ -48,7 +50,7 @@ const getVideo = catchAsync(async function (
 	};
 	const file = fs.createReadStream(path, { start, end });
 	res.writeHead(206, head);
-	return file.pipe(res);
+	file.pipe(res);
 });
 
 const getThumbnail = catchAsync(async function (

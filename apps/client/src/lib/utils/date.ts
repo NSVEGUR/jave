@@ -24,3 +24,16 @@ function padTo2Digits(num: number) {
 export const getHoursAndMinutes = function (date: Date) {
 	return `${padTo2Digits(date.getHours())}:${padTo2Digits(date.getMinutes())}`;
 };
+
+export const getVideoDuration = function (currentTime: number, duration: number) {
+	const currentDuration = `${padTo2Digits(Math.floor(currentTime / 60))}:${padTo2Digits(
+		Math.floor(currentTime % 60)
+	)}`;
+	const totalDuration = `${padTo2Digits(Math.floor(duration / 60))}:${padTo2Digits(
+		Math.floor(duration % 60)
+	)}`;
+	if (isNaN(Math.floor(duration / 60))) {
+		return { currentDuration: '00:00', totalDuration: '00:00' };
+	}
+	return { currentDuration, totalDuration };
+};

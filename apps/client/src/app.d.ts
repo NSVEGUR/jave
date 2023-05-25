@@ -14,6 +14,9 @@ declare global {
 			description: string;
 			fileId: string;
 			thumbnailId: string;
+			size: number;
+			mimetype: string;
+			createdAt: string;
 		}
 		interface Locals {
 			user: {
