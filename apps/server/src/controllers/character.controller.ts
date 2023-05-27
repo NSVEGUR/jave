@@ -15,7 +15,16 @@ const get = catchAsync(async function (
 			file: true
 		}
 	});
+
 	if (!character) {
+		return next(new AppError('Film not found', 404));
+	}
+	const film = await prisma.film.findUnique({
+		where: {
+			id: character.filmId
+		}
+	});
+	if (!film) {
 		return next(new AppError('Film not found', 404));
 	}
 	return res.status(200).json({
@@ -26,6 +35,10 @@ const get = catchAsync(async function (
 			character: {
 				id: character.id,
 				name: character.name,
+				fileId: character.fileId,
+				genre: film.genre,
+				filmId: film.id,
+				type: film.type,
 				description: character.description,
 				size: character.file?.size,
 				mimetype: character.file?.mimetype,

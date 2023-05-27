@@ -150,6 +150,7 @@ const getAll = catchAsync(async function (
 					id: film.id,
 					title: film.title,
 					genre: film.genre,
+					type: film.type,
 					description: film.description,
 					fileId: film.fileId,
 					thumbnailId: film.thumbnailId
@@ -168,7 +169,8 @@ const get = catchAsync(async function (
 	const film = await prisma.film.findUnique({
 		where: { id: filmId },
 		include: {
-			file: true
+			file: true,
+			characters: true
 		}
 	});
 	if (!film) {
@@ -181,7 +183,9 @@ const get = catchAsync(async function (
 		data: {
 			film: {
 				id: film.id,
+				type: film.type,
 				title: film.title,
+				characters: film.characters,
 				genre: film.genre,
 				fileId: film.fileId,
 				description: film.description,

@@ -9,6 +9,7 @@ declare global {
 	namespace App {
 		interface Film {
 			id: string;
+			type: string;
 			title: string;
 			genre: string;
 			description: string;
@@ -17,6 +18,41 @@ declare global {
 			size: number;
 			mimetype: string;
 			createdAt: string;
+			characters: Character[];
+			type: 'JAVE' | 'NORMAL';
+		}
+		interface Character {
+			id: string;
+			type: string;
+			genre: string;
+			name: string;
+			description: string;
+			filmId: string;
+			fileId: string;
+			imageId: string;
+			size: number;
+			mimetype: string;
+			createdAt: string;
+			timestamp: Timestamp[];
+		}
+		interface Video {
+			id: string;
+			filmId: string;
+			type: string;
+			title: string;
+			genre: string;
+			description: string;
+			fileId: string;
+			thumbnailId: string;
+			size: number;
+			mimetype: string;
+			createdAt: string;
+			characters?: Character[];
+			timestamp?: Timestamp[];
+		}
+		interface Timestamp {
+			start: number;
+			end: number;
 		}
 		interface Locals {
 			user: {
