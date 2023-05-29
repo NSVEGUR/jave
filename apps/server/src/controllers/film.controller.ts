@@ -170,7 +170,11 @@ const get = catchAsync(async function (
 		where: { id: filmId },
 		include: {
 			file: true,
-			characters: true
+			characters: {
+				include: {
+					timestamps: true
+				}
+			}
 		}
 	});
 	if (!film) {

@@ -33,7 +33,7 @@ declare global {
 			size: number;
 			mimetype: string;
 			createdAt: string;
-			timestamp: Timestamp[];
+			timestamps: Timestamp[];
 		}
 		interface Video {
 			id: string;
@@ -48,7 +48,7 @@ declare global {
 			mimetype: string;
 			createdAt: string;
 			characters?: Character[];
-			timestamp?: Timestamp[];
+			timestamps?: Timestamp[];
 		}
 		interface Timestamp {
 			start: number;

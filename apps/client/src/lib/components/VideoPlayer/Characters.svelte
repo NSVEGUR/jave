@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
+	import { Video } from './Video.svelte';
 	export let characters: App.Character[];
 </script>
 
-<div class="max-w-[300px] flex flex-col gap-5 mt-5" transition:slide>
+<div class="max-w-[300px] flex flex-col gap-5 mt-5" transition:slide id="characters">
 	{#each characters as character}
 		<a
 			href="/admin/library/character/{character.id}"

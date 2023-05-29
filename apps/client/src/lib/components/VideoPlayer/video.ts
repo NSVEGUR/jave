@@ -1,6 +1,14 @@
 import { getVideoDuration } from '$lib/utils/date';
 
 class Video {
+	playbackRate: number;
+	quality: number | 'Auto';
+	timestamp: number;
+	constructor() {
+		this.playbackRate = 1.0;
+		this.quality = 'Auto';
+		this.timestamp = 0;
+	}
 	togglePlay = () => {
 		const video = document.getElementById('video') as HTMLVideoElement;
 		video.paused ? video.play() : video.pause();

@@ -1,5 +1,10 @@
-<script lang="ts">
+<script lang="ts" context="module">
+	import { writable } from 'svelte/store';
 	import video from './video';
+	export const Video = writable(video);
+</script>
+
+<script lang="ts">
 	import Player from './Player.svelte';
 	export let details: App.Video;
 	let currentDuration = '00:00';
@@ -12,7 +17,7 @@
 		if (video.paused) return;
 		controlTimer = setTimeout(() => {
 			showControls = false;
-		}, 1000);
+		}, 3000);
 	};
 	const handleMouseMove = () => {
 		showControls = true;
@@ -25,6 +30,8 @@
 	<video
 		class="w-full h-full absolute inset-0"
 		id="video"
+		bind:playbackRate={$Video.playbackRate}
+		bind:currentTime={$Video.timestamp}
 		on:play={() => {
 			isPlaying = true;
 		}}
@@ -32,7 +39,7 @@
 			isPlaying = false;
 		}}
 		on:timeupdate={() => {
-			({ currentDuration, totalDuration } = video.handleTimeUpdate());
+			({ currentDuration, totalDuration } = $Video.handleTimeUpdate());
 		}}
 		poster="/api/film/{details.thumbnailId}/thumbnail"
 	>

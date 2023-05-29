@@ -12,7 +12,8 @@ const get = catchAsync(async function (
 	const character = await prisma.character.findUnique({
 		where: { id: characterId },
 		include: {
-			file: true
+			file: true,
+			timestamps: true
 		}
 	});
 
@@ -43,7 +44,8 @@ const get = catchAsync(async function (
 				size: character.file?.size,
 				mimetype: character.file?.mimetype,
 				createdAt: character.file?.createdAt,
-				imageId: character.imageId
+				imageId: character.imageId,
+				timestamps: character.timestamps
 			}
 		}
 	});
