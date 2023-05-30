@@ -59,15 +59,17 @@
 	});
 </script>
 
-<div class="w-screen relative h-screen overflow-hidden flex justify-center items-center">
+<div
+	class="w-screen relative h-[calc(100vh-theme(spacing.16))] overflow-hidden flex justify-center items-center"
+>
 	{#each slides as slide}
 		<div
 			class="watch-slide w-full absolute h-full shadow-sm transition-all duration-500 rounded-xl flex flex-col hover:shadow-xl cursor-pointer"
 		>
 			<img class="object-cover rounded-t-xl h-full" src={slide.img} alt={slide.title} />
 			<div class="absolute inset-0 w-full h-full bg-black bg-opacity-30" />
-			<div class="absolute bottom-5 left-5 max-w-[50%] flex flex-col gap-2">
-				<h1 class="text-5xl font-medium">{slide.title}</h1>
+			<div class="absolute bottom-5 left-10 max-w-[50%] flex flex-col gap-2">
+				<h1 class="text-5xl font-semibold">{slide.title}</h1>
 				<h2 class="text-skin-muted-inverted">{slide.genre}</h2>
 				<h2>{slide.description}</h2>
 			</div>
